@@ -17,14 +17,7 @@ const notices = [
       "욕설, 도배, 분쟁 유도 행위는 제재 대상입니다. 모두가 편하게 이용할 수 있도록 협조 부탁드립니다.",
     important: false,
   },
-  {
-    id: 3,
-    title: "주말 발로란트 내전 멤버 모집",
-    date: "2026-02-27",
-    content:
-      "이번 주말 저녁 발로란트 내전 멤버를 모집합니다. 실력 무관, 매너 플레이 환영합니다.",
-    important: false,
-  },
+  
 ];
 
 export default function NoticePage() {
