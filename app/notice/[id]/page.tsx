@@ -3,13 +3,16 @@ import { notFound } from "next/navigation";
 import { notices } from "@/data/notices";
 
 type NoticeDetailPageProps = {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 };
 
-export default function NoticeDetailPage({ params }: NoticeDetailPageProps) {
-  const notice = notices.find((item) => String(item.id) === params.id);
+export default async function NoticeDetailPage({
+  params,
+}: NoticeDetailPageProps) {
+  const { id } = await params;
+  const notice = notices.find((item) => item.id === id);
 
   if (!notice) {
     notFound();
