@@ -1,7 +1,29 @@
+"use client";
+
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { createClient } from "@/lib/supabase";
 import { notices } from "@/data/notices";
 
 export default function NoticePage() {
+  const supabase = createClient();
+
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+  const getUser = async () => {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (user?.email === "dogwho12@gmail.com") {
+      setIsAdmin(true);
+    }
+  };
+
+  getUser();
+}, [supabase]);
+
   return (
     <main className="min-h-screen bg-[#050816] px-6 py-12 text-white">
       <div className="mx-auto max-w-5xl">
@@ -16,12 +38,23 @@ export default function NoticePage() {
             </p>
           </div>
 
-          <Link
-            href="/"
-            className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
-          >
-            홈으로
-          </Link>
+          <div className="flex items-center gap-3">
+            {isAdmin && (
+              <Link
+                href="/notice/write"
+                className="rounded-xl bg-gradient-to-r from-sky-400 to-cyan-300 px-4 py-2 text-sm font-bold text-slate-950 shadow-[0_0_20px_rgba(56,189,248,0.35)] transition hover:scale-105"
+              >
+                공지 작성
+              </Link>
+            )}
+
+            <Link
+              href="/"
+              className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
+            >
+              홈으로
+            </Link>
+          </div>
         </div>
 
         <div className="space-y-4">
