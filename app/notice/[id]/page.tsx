@@ -9,7 +9,7 @@ type NoticeDetailPageProps = {
 };
 
 export default function NoticeDetailPage({ params }: NoticeDetailPageProps) {
-  const notice = notices.find((item) => item.id === params.id);
+  const notice = notices.find((item) => String(item.id) === params.id);
 
   if (!notice) {
     notFound();
