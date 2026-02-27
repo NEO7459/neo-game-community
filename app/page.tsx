@@ -55,9 +55,12 @@ export default function Home() {
           <a href="#" className="text-sm font-medium text-slate-300 transition hover:text-sky-300">
             홈
           </a>
-          <a href="#" className="text-sm font-medium text-slate-300 transition hover:text-sky-300">
-            공지사항
-          </a>
+          <Link
+            href="/notice"
+            className="text-sm font-medium text-slate-300 transition hover:text-sky-300"
+          >
+           공지사항
+          </Link>
           <a href="#" className="text-sm font-medium text-slate-300 transition hover:text-sky-300">
             파티 모집
           </a>
