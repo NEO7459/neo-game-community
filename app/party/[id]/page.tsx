@@ -23,7 +23,7 @@ export default function PartyDetailPage() {
 
   const [post, setPost] = useState<PartyPost | null>(null);
   const [loading, setLoading] = useState(true);
-  const [canDelete, setCanDelete] = useState(false);
+  const [canManage, setCanManage] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
@@ -44,11 +44,11 @@ export default function PartyDetailPage() {
         setPost(data);
 
         if (
-          user?.email === "dogwho12@gmail.com" ||
-          user?.email === data.author_email
-        ) {
-          setCanDelete(true);
-        }
+            user?.email === "dogwho12@gmail.com" ||
+            user?.email === data.author_email
+            ) {
+                setCanManage(true);
+                }
       }
 
       setLoading(false);
@@ -112,23 +112,32 @@ export default function PartyDetailPage() {
           </Link>
 
           <div className="flex items-center gap-3">
-            {canDelete && (
-              <button
-                onClick={handleDelete}
-                disabled={deleting}
-                className="rounded-2xl bg-gradient-to-r from-rose-400 to-pink-400 px-4 py-2 text-sm font-bold text-white shadow-[0_0_20px_rgba(244,114,182,0.25)] transition hover:scale-105 disabled:opacity-60"
-              >
-                {deleting ? "삭제 중..." : "모집글 삭제"}
-              </button>
-            )}
-
+            {canManage && (
+            <>
             <Link
-              href="/"
-              className="rounded-2xl border border-white/60 bg-white/80 px-4 py-2 text-sm font-semibold text-slate-800 transition hover:bg-white"
+             href={`/party/${post.id}/edit`}
+             className="rounded-2xl bg-gradient-to-r from-amber-300 to-yellow-300 px-4 py-2 text-sm font-bold text-slate-900 shadow-[0_0_20px_rgba(253,224,71,0.25)] transition hover:scale-105"
             >
-              홈으로
-            </Link>
-          </div>
+             모집글 수정
+             </Link>
+
+                <button
+                 onClick={handleDelete}
+                 disabled={deleting}
+                 className="rounded-2xl bg-gradient-to-r from-rose-400 to-pink-400 px-4 py-2 text-sm font-bold text-white shadow-[0_0_20px_rgba(244,114,182,0.25)] transition hover:scale-105 disabled:opacity-60"
+                >
+            {deleting ? "삭제 중..." : "모집글 삭제"}
+            </button>
+         </>
+        )}
+
+                <Link
+                 href="/"
+                 className="rounded-2xl border border-white/60 bg-white/80 px-4 py-2 text-sm font-semibold text-slate-800 transition hover:bg-white"
+                >
+                홈으로
+                </Link>
+            </div>
         </div>
 
         <article className="rounded-[32px] border border-white/60 bg-white/70 p-8 shadow-[0_20px_60px_rgba(56,189,248,0.12)] backdrop-blur-xl">
