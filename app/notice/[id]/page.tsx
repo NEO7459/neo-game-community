@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase";
 
 type Notice = {
@@ -17,13 +17,24 @@ type Notice = {
 export default function NoticeDetailPage() {
   const supabase = createClient();
   const params = useParams();
+  const router = useRouter();
 
   const [notice, setNotice] = useState<Notice | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     const loadNotice = async () => {
       const id = params.id as string;
+
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (user?.email === "dogwho12@gmail.com") {
+        setIsAdmin(true);
+      }
 
       const { data, error } = await supabase
         .from("notices")
@@ -40,6 +51,29 @@ export default function NoticeDetailPage() {
 
     loadNotice();
   }, [params, supabase]);
+
+  const handleDelete = async () => {
+    if (!notice) return;
+
+    const ok = window.confirm("이 공지를 삭제할까요?");
+    if (!ok) return;
+
+    setDeleting(true);
+
+    const { error } = await supabase
+      .from("notices")
+      .delete()
+      .eq("id", notice.id);
+
+    if (error) {
+      alert("삭제 실패: " + error.message);
+      setDeleting(false);
+      return;
+    }
+
+    router.push("/notice");
+    router.refresh();
+  };
 
   if (loading) {
     return (
@@ -90,12 +124,24 @@ export default function NoticeDetailPage() {
             ← 공지사항 목록
           </Link>
 
-          <Link
-            href="/"
-            className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
-          >
-            홈으로
-          </Link>
+          <div className="flex items-center gap-3">
+            {isAdmin && (
+              <button
+                onClick={handleDelete}
+                disabled={deleting}
+                className="rounded-xl bg-gradient-to-r from-rose-400 to-pink-400 px-4 py-2 text-sm font-bold text-slate-950 shadow-[0_0_20px_rgba(251,113,133,0.35)] transition hover:scale-105 disabled:opacity-60"
+              >
+                {deleting ? "삭제 중..." : "공지 삭제"}
+              </button>
+            )}
+
+            <Link
+              href="/"
+              className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
+            >
+              홈으로
+            </Link>
+          </div>
         </div>
 
         <article className="rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl">
