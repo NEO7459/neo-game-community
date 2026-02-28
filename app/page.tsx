@@ -61,9 +61,12 @@ export default function Home() {
           >
            공지사항
           </Link>
-          <a href="#" className="text-sm font-medium text-slate-300 transition hover:text-sky-300">
+          <Link
+            href="/party"
+            className="text-sm font-medium text-slate-300 transition hover:text-sky-300"
+          >
             파티 모집
-          </a>
+          </Link>
           <a href="#" className="text-sm font-medium text-slate-300 transition hover:text-sky-300">
             자유게시판
           </a>
