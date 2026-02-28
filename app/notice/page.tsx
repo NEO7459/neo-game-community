@@ -3,26 +3,47 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase";
-import { notices } from "@/data/notices";
+
+type Notice = {
+  id: string;
+  title: string;
+  content: string;
+  important: boolean;
+  created_at: string;
+  author_email: string | null;
+};
 
 export default function NoticePage() {
   const supabase = createClient();
 
   const [isAdmin, setIsAdmin] = useState(false);
+  const [notices, setNotices] = useState<Notice[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-  const getUser = async () => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const loadData = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
-    if (user?.email === "dogwho12@gmail.com") {
-      setIsAdmin(true);
-    }
-  };
+      if (user?.email === "dogwho12@gmail.com") {
+        setIsAdmin(true);
+      }
 
-  getUser();
-}, [supabase]);
+      const { data, error } = await supabase
+        .from("notices")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (!error && data) {
+        setNotices(data);
+      }
+
+      setLoading(false);
+    };
+
+    loadData();
+  }, [supabase]);
 
   return (
     <main className="min-h-screen bg-[#050816] px-6 py-12 text-white">
@@ -57,29 +78,37 @@ export default function NoticePage() {
           </div>
         </div>
 
-        <div className="space-y-4">
-          {notices.map((notice) => (
-            <Link
-              key={notice.id}
-              href={`/notice/${notice.id}`}
-              className="block rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-xl transition hover:border-sky-400/30 hover:bg-white/10"
-            >
-              <div className="mb-3 flex items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
-                  {notice.important && (
-                    <span className="rounded-full bg-rose-400/20 px-3 py-1 text-xs font-bold text-rose-300">
-                      중요
-                    </span>
-                  )}
-                  <h2 className="text-xl font-bold">{notice.title}</h2>
+        {loading ? (
+          <p className="text-slate-400">불러오는 중...</p>
+        ) : notices.length === 0 ? (
+          <p className="text-slate-400">등록된 공지가 없습니다.</p>
+        ) : (
+          <div className="space-y-4">
+            {notices.map((notice) => (
+              <Link
+                key={notice.id}
+                href={`/notice/${notice.id}`}
+                className="block rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-xl transition hover:border-sky-400/30 hover:bg-white/10"
+              >
+                <div className="mb-3 flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-3">
+                    {notice.important && (
+                      <span className="rounded-full bg-rose-400/20 px-3 py-1 text-xs font-bold text-rose-300">
+                        중요
+                      </span>
+                    )}
+                    <h2 className="text-xl font-bold">{notice.title}</h2>
+                  </div>
+                  <span className="text-sm text-slate-400">
+                    {new Date(notice.created_at).toLocaleDateString("ko-KR")}
+                  </span>
                 </div>
-                <span className="text-sm text-slate-400">{notice.date}</span>
-              </div>
 
-              <p className="leading-7 text-slate-300">{notice.content}</p>
-            </Link>
-          ))}
-        </div>
+                <p className="leading-7 text-slate-300">{notice.content}</p>
+              </Link>
+            ))}
+          </div>
+        )}
       </div>
     </main>
   );
