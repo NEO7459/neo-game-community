@@ -126,14 +126,23 @@ export default function NoticeDetailPage() {
 
           <div className="flex items-center gap-3">
             {isAdmin && (
-              <button
+              <>
+               <Link
+                  href={`/notice/${notice.id}/edit`}
+                  className="rounded-xl bg-gradient-to-r from-amber-300 to-yellow-300 px-4 py-2 text-sm font-bold text-slate-950 shadow-[0_0_20px_rgba(253,224,71,0.35)] transition hover:scale-105"
+               >
+                공지 수정
+               </Link>
+
+               <button
                 onClick={handleDelete}
                 disabled={deleting}
                 className="rounded-xl bg-gradient-to-r from-rose-400 to-pink-400 px-4 py-2 text-sm font-bold text-slate-950 shadow-[0_0_20px_rgba(251,113,133,0.35)] transition hover:scale-105 disabled:opacity-60"
               >
-                {deleting ? "삭제 중..." : "공지 삭제"}
-              </button>
-            )}
+               {deleting ? "삭제 중..." : "공지 삭제"}
+             </button>
+          </>
+        )}
 
             <Link
               href="/"
