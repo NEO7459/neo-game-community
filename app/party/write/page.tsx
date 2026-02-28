@@ -9,7 +9,7 @@ export default function PartyWritePage() {
   const supabase = createClient();
   const router = useRouter();
 
-  const [game, setGame] = useState("발로란트");
+  const [game, setGame] = useState("");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [discordLink, setDiscordLink] = useState("");
@@ -21,8 +21,8 @@ export default function PartyWritePage() {
     e.preventDefault();
     setMessage("");
 
-    if (!title.trim() || !content.trim() || !discordLink.trim()) {
-      setMessage("게임, 제목, 내용, 디스코드 링크를 모두 입력해주세요.");
+    if (!game.trim() || !title.trim() || !content.trim() || !discordLink.trim()) {
+      setMessage("게임명, 제목, 내용, 디스코드 링크를 모두 입력해주세요.");
       return;
     }
 
@@ -39,7 +39,7 @@ export default function PartyWritePage() {
     }
 
     const { error } = await supabase.from("party_posts").insert({
-      game,
+      game: game.trim(),
       title: title.trim(),
       content: content.trim(),
       discord_link: discordLink.trim(),
@@ -58,22 +58,22 @@ export default function PartyWritePage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#050816] px-6 py-12 text-white">
-      <div className="mx-auto max-w-3xl rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl">
+    <main className="min-h-screen bg-gradient-to-br from-sky-100 via-cyan-50 to-fuchsia-100 px-6 py-12 text-slate-900">
+      <div className="mx-auto max-w-3xl rounded-[32px] border border-white/60 bg-white/70 p-8 shadow-[0_20px_60px_rgba(56,189,248,0.12)] backdrop-blur-xl">
         <div className="mb-8 flex items-center justify-between">
           <div>
-            <p className="text-sm font-semibold tracking-[0.2em] text-sky-300">
+            <p className="text-sm font-semibold tracking-[0.2em] text-sky-600">
               NEO GAME COMMUNITY
             </p>
             <h1 className="mt-3 text-4xl font-black">파티 모집 작성</h1>
-            <p className="mt-2 text-slate-400">
-              게임 파티 모집 글과 디스코드 링크를 등록하세요.
+            <p className="mt-2 text-slate-600">
+              원하는 게임 이름을 자유롭게 적고 디스코드 링크를 등록하세요.
             </p>
           </div>
 
           <Link
             href="/party"
-            className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
+            className="rounded-2xl border border-white/50 bg-white/80 px-4 py-2 text-sm font-semibold text-slate-800 transition hover:bg-white"
           >
             목록으로
           </Link>
@@ -81,49 +81,46 @@ export default function PartyWritePage() {
 
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
-            <label className="mb-2 block text-sm font-medium text-slate-300">
-              게임
+            <label className="mb-2 block text-sm font-medium text-slate-700">
+              게임명
             </label>
-            <select
+            <input
+              type="text"
+              placeholder="예: 오버워치 2, FC 온라인, 마인크래프트"
               value={game}
               onChange={(e) => setGame(e.target.value)}
-              className="w-full rounded-xl border border-white/10 bg-slate-900/70 px-4 py-3 text-white outline-none"
-            >
-              <option>발로란트</option>
-              <option>배틀그라운드</option>
-              <option>리그 오브 레전드</option>
-              <option>레인보우식스 시즈</option>
-            </select>
+              className="w-full rounded-2xl border border-white/60 bg-white/80 px-4 py-3 text-slate-900 outline-none placeholder:text-slate-400"
+            />
           </div>
 
           <div>
-            <label className="mb-2 block text-sm font-medium text-slate-300">
+            <label className="mb-2 block text-sm font-medium text-slate-700">
               제목
             </label>
             <input
               type="text"
-              placeholder="예: 저녁 경쟁전 2명 구함"
+              placeholder="예: 저녁 랭크 2명 구함"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full rounded-xl border border-white/10 bg-slate-900/70 px-4 py-3 text-white outline-none"
+              className="w-full rounded-2xl border border-white/60 bg-white/80 px-4 py-3 text-slate-900 outline-none placeholder:text-slate-400"
             />
           </div>
 
           <div>
-            <label className="mb-2 block text-sm font-medium text-slate-300">
+            <label className="mb-2 block text-sm font-medium text-slate-700">
               내용
             </label>
             <textarea
               rows={6}
-              placeholder="모집 조건, 시간, 티어 등을 적어주세요."
+              placeholder="시간, 조건, 티어, 분위기 등을 적어주세요."
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              className="w-full rounded-xl border border-white/10 bg-slate-900/70 px-4 py-3 text-white outline-none"
+              className="w-full rounded-2xl border border-white/60 bg-white/80 px-4 py-3 text-slate-900 outline-none placeholder:text-slate-400"
             />
           </div>
 
           <div>
-            <label className="mb-2 block text-sm font-medium text-slate-300">
+            <label className="mb-2 block text-sm font-medium text-slate-700">
               디스코드 링크
             </label>
             <input
@@ -131,30 +128,30 @@ export default function PartyWritePage() {
               placeholder="https://discord.gg/..."
               value={discordLink}
               onChange={(e) => setDiscordLink(e.target.value)}
-              className="w-full rounded-xl border border-white/10 bg-slate-900/70 px-4 py-3 text-white outline-none"
+              className="w-full rounded-2xl border border-white/60 bg-white/80 px-4 py-3 text-slate-900 outline-none placeholder:text-slate-400"
             />
           </div>
 
           <div>
-            <label className="mb-2 block text-sm font-medium text-slate-300">
+            <label className="mb-2 block text-sm font-medium text-slate-700">
               모집 상태
             </label>
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value)}
-              className="w-full rounded-xl border border-white/10 bg-slate-900/70 px-4 py-3 text-white outline-none"
+              className="w-full rounded-2xl border border-white/60 bg-white/80 px-4 py-3 text-slate-900 outline-none"
             >
               <option>모집중</option>
               <option>마감</option>
             </select>
           </div>
 
-          {message && <p className="text-sm text-sky-300">{message}</p>}
+          {message && <p className="text-sm text-sky-700">{message}</p>}
 
           <button
             type="submit"
             disabled={saving}
-            className="rounded-xl bg-gradient-to-r from-sky-400 to-cyan-300 px-5 py-3 font-bold text-slate-950 disabled:opacity-60"
+            className="rounded-2xl bg-gradient-to-r from-sky-500 to-cyan-400 px-5 py-3 font-bold text-white shadow-[0_0_25px_rgba(14,165,233,0.35)] disabled:opacity-60"
           >
             {saving ? "저장 중..." : "파티 모집 등록"}
           </button>
